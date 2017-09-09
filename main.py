@@ -56,41 +56,41 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     :return: The Tensor for the last layer of output
     """
     # TODO: Implement function
-    vgg_layer7_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same') 
-#    vgg_layer7_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same', 
-#        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+#    vgg_layer7_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same') 
+    vgg_layer7_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same', 
+        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     print("vgg_layer7_1x1 ", vgg_layer7_1x1)
 
-    trans1 = tf.layers.conv2d_transpose(vgg_layer7_1x1, num_classes, 4, 2, padding='same')
-#    trans1 = tf.layers.conv2d_transpose(vgg_layer7_1x1, num_classes, 4, 2, padding='same',
-#        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+#    trans1 = tf.layers.conv2d_transpose(vgg_layer7_1x1, num_classes, 4, 2, padding='same')
+    trans1 = tf.layers.conv2d_transpose(vgg_layer7_1x1, num_classes, 4, 2, padding='same',
+        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     print("trans1 ", trans1)
     
-    vgg_layer4_1x1 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, padding='same')
-#    vgg_layer4_1x1 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, padding='same', 
-#        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+#    vgg_layer4_1x1 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, padding='same')
+    vgg_layer4_1x1 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, padding='same', 
+        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     print("vgg_layer4_1x1 ", vgg_layer4_1x1)
 
     skip1 = tf.add(trans1, vgg_layer4_1x1)
     print("skip1 ", skip1)
 
-    trans2 = tf.layers.conv2d_transpose(skip1, num_classes, 4, 2, padding='same')
-#    trans2 = tf.layers.conv2d_transpose(skip1, num_classes, 4, 2, padding='same',
-        #kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+#    trans2 = tf.layers.conv2d_transpose(skip1, num_classes, 4, 2, padding='same')
+    trans2 = tf.layers.conv2d_transpose(skip1, num_classes, 4, 2, padding='same',
+        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
     print("trans2 ", trans2)
 
-    vgg_layer3_1x1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same')
-#    vgg_layer3_1x1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same', 
-        #kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+#    vgg_layer3_1x1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same')
+    vgg_layer3_1x1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same', 
+        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     print("vgg_layer3_1x1 ", vgg_layer3_1x1)
 
     skip2 = tf.add(trans2, vgg_layer3_1x1)
     print("skip2 ", skip2)
 
-    output =  tf.layers.conv2d_transpose(skip2, num_classes, 16, 8, padding='same')
-#    output =  tf.layers.conv2d_transpose(skip2, num_classes, 16, 8, padding='same',
-#        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+#    output =  tf.layers.conv2d_transpose(skip2, num_classes, 16, 8, padding='same')
+    output =  tf.layers.conv2d_transpose(skip2, num_classes, 16, 8, padding='same',
+        kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     print("output ", output)
     return output
 
@@ -108,6 +108,7 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     """
     # TODO: Implement function
     logits = tf.reshape(nn_last_layer, (-1, num_classes))
+    print("logits", logits)
     cross_entropy_loss = tf.reduce_mean(
         tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=correct_label))
 
@@ -198,7 +199,7 @@ def run():
                                                         learning_rate,
                                                         num_classes)
         # TODO: Train NN using the train_nn function
-        epochs = 50
+        epochs = 10
         batch_size = 10
         train_nn(sess, epochs, batch_size, get_batches_fn, train_op,
                  cross_entropy_loss, input_image,
