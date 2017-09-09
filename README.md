@@ -5,6 +5,10 @@ In this project, you'll label the pixels of a road in images using a Fully Convo
 ## Model Documentation
 This model is based on the walkthrough video. 
 
+![alt text][arch]
+
+[arch]: ./files/arch.png"
+
 ### Setup
 ##### Frameworks and Packages
 Make sure you have the following is installed:
