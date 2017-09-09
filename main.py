@@ -36,12 +36,12 @@ def load_vgg(sess, vgg_path):
     tf.saved_model.loader.load(sess, [vgg_tag], vgg_path)
     graph = tf.get_default_graph()
 
-    w1 = graph.get_tensor_by_name(vgg_input_tensor_name)
+    image_input = graph.get_tensor_by_name(vgg_input_tensor_name)
     keep_prob = graph.get_tensor_by_name(vgg_keep_prob_tensor_name)
     layer3 = graph.get_tensor_by_name(vgg_layer3_out_tensor_name)
     layer4 = graph.get_tensor_by_name(vgg_layer4_out_tensor_name)
     layer7 = graph.get_tensor_by_name(vgg_layer7_out_tensor_name)
-    return w1, keep_prob, layer3, layer4, layer5
+    return image_input, keep_prob, layer3, layer4, layer7
 
 tests.test_load_vgg(load_vgg, tf)
 
@@ -60,7 +60,7 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
         kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     print("vgg_layer7_1x1 ", vgg_layer7_1x1)
     
-    trans1 = tf.layers.conv2d_transpose(vgg_layer7_1x1, num_claesse, 4, 2, padding='same',
+    trans1 = tf.layers.conv2d_transpose(vgg_layer7_1x1, num_classes, 4, 2, padding='same',
         kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     print("trans1 ", trans1)
     
@@ -71,7 +71,7 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     skip1 = tf.add(trans1, vgg_layer4_1x1)
     print("skip1 ", skip1)
 
-    trans2 = tf.layers.conv2d_transpose(skip1, num_claesse, 4, 2, padding='same',
+    trans2 = tf.layers.conv2d_transpose(skip1, num_classes, 4, 2, padding='same',
         kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
     print("trans2 ", trans2)
@@ -83,7 +83,7 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     skip2 = tf.add(trans2, vgg_layer3_1x1)
     print("skip2 ", skip2)
 
-    output =  tf.layers.conv2d_transpose(skip2, num_claesse, 16, 8, padding='same',
+    output =  tf.layers.conv2d_transpose(skip2, num_classes, 16, 8, padding='same',
         kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
     print("output ", output)
     return output
@@ -129,7 +129,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
 
     learn_rate = 0.001
     dropout = 0.8
-    # TODO: Implement function
+    step = 0
     for i in range(epochs):
         print('Epoch %d step %d' % (i, step))
         for image, label in get_batches_fn(batch_size):
@@ -185,7 +185,7 @@ def run():
         correct_label = tf.placeholder(tf.float32,
                 (None, image_shape[0], image_shape[1], num_classes))
 
-        logits, train_op, cross_entropy_loss = optimize(nn_last_layer,
+        logits, train_op, cross_entropy_loss = optimize(layer_output,
                                                         correct_label,
                                                         learning_rate,
                                                         num_classes)
