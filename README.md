@@ -4,17 +4,17 @@ In this project, you'll label the pixels of a road in images using a Fully Convo
 
 ### Model Documentation
 This model is based on the walkthrough video. Vgg-layer3 and 4 are added to the docode of Vgg-layer7.
-These are the same as "FCN-8 Encoder/FCN-9 Decoder" in the lesson.
+These are the same as "FCN-8 Encoder/FCN-9 Decoder" in the lesson. In addition, I used kenel_initializer and kernel_regularizer.
 
 ~~~
-vgg_layer7_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1) 
-trans1 = tf.layers.conv2d_transpose(vgg_layer7_1x1, num_classes, 4, 2) 
-vgg_layer4_1x1 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1)
-skip1 = tf.add(trans2, vgg_layer4_1x1)
-trans2 = tf.layers.conv2d_transpose(skip1, num_classes, 4, 2)
-vgg_layer3_1x1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1)
-skip2 = tf.add(trans2, vgg_layer3_1x1)
-output = tf.layers.conv2d_transpose(skip2, num_classes, 16, 8)
+vgg_layer7_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, ...) 
+trans1 = tf.layers.conv2d_transpose(vgg_layer7_1x1, num_classes, 4, 2, ...) 
+vgg_layer4_1x1 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, ...)
+skip1 = tf.add(trans2, vgg_layer4_1x1, ...)
+trans2 = tf.layers.conv2d_transpose(skip1, num_classes, 4, 2, ...)
+vgg_layer3_1x1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, ...)
+skip2 = tf.add(trans2, vgg_layer3_1x1, ...)
+output = tf.layers.conv2d_transpose(skip2, num_classes, 16, 8, ...)
 ~~~
 
 ![](./files/arch.png)
@@ -27,8 +27,8 @@ cross_entropy_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logi
 optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy_loss)
 ~~~
 
-The more batches are, the more efficient it is, but because the memory becomes insufficient, batch is set to 10.
-In addition, if it is 30 epoch, learning will be insufficient and it is set to 100.
+We know that larger batch sizes might speed up the training but can degrade the quality of the model at the same time.
+So batch is set to 1 and epochs is set to 8.
 
 ### Setup
 ##### Frameworks and Packages
