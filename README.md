@@ -3,9 +3,34 @@
 In this project, you'll label the pixels of a road in images using a Fully Convolutional Network (FCN).
 
 ## Model Documentation
-This model is based on the walkthrough video. 
+This model is based on the walkthrough video. Vgg-layer3 and 4 are added to the docode of Vgg-layer7.
+These are the same as "FCN-8 Encoder/FCN-9 Decoder" in the lesson.
 
-[arch]: (./files/arch.png)
+~~~
+vgg_layer7_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same') 
+trans1 = tf.layers.conv2d_transpose(vgg_layer7_1x1, num_classes, 4, 2, padding='same') 
+vgg_layer4_1x1 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, padding='same')
+skip1 = tf.add(trans2, vgg_layer4_1x1)
+trans2 = tf.layers.conv2d_transpose(skip1, num_classes, 4, 2, padding='same')
+vgg_layer3_1x1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same')
+skip2 = tf.add(trans2, vgg_layer3_1x1)
+output = tf.layers.conv2d_transpose(skip2, num_classes, 16, 8, padding='same')
+~~~~
+
+![](./files/arch.png)
+
+~~~
+
+The Optimization is as follows. This is the same as "FCN-8 Classfication & Loss".
+ 
+~~~
+logits = tf.reshape(nn_last_layer, (-1, num_classes))
+cross_entropy_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=correct_label))
+optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy_loss)
+~~~
+
+The more batches are, the more efficient it is, but because the memory becomes insufficient, batch is set to 10.
+In addition, if it is 30 epoch, learning will be insufficient and it is set to 100.
 
 ### Setup
 ##### Frameworks and Packages
