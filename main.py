@@ -199,7 +199,7 @@ def run():
                                                         learning_rate,
                                                         num_classes)
         # TODO: Train NN using the train_nn function
-        epochs = 5
+        epochs = 10
         batch_size = 1
         train_nn(sess, epochs, batch_size, get_batches_fn, train_op,
                  cross_entropy_loss, input_image,
