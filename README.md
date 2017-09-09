@@ -15,7 +15,7 @@ trans2 = tf.layers.conv2d_transpose(skip1, num_classes, 4, 2, padding='same')
 vgg_layer3_1x1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same')
 skip2 = tf.add(trans2, vgg_layer3_1x1)
 output = tf.layers.conv2d_transpose(skip2, num_classes, 16, 8, padding='same')
-~~~~
+~~~
 
 ![](./files/arch.png)
 
