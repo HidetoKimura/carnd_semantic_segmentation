@@ -2,7 +2,7 @@
 ### Introduction
 In this project, you'll label the pixels of a road in images using a Fully Convolutional Network (FCN).
 
-## Model Documentation
+### Model Documentation
 This model is based on the walkthrough video. Vgg-layer3 and 4 are added to the docode of Vgg-layer7.
 These are the same as "FCN-8 Encoder/FCN-9 Decoder" in the lesson.
 
